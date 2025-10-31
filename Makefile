@@ -1,3 +1,7 @@
 
 main: main.c
-	gcc -Wall -Wextra main.c -o main -lm
+	gcc -Wall -Wextra $< -o %@ -lm
+
+.PHONY clean
+clean:
+	rm main
