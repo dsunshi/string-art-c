@@ -1,3 +1,3 @@
 
-main:
-	gcc main.c -o main -lm
+main: main.c
+	gcc -Wall -Wextra main.c -o main -lm
