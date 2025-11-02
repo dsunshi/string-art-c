@@ -5,10 +5,12 @@
 #include <assert.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 // Force RGB
 #define DESIRED_CHANNELS 3
+#define JPG_QUALITY 100
 
 #define RED 0
 #define GREEN 1
@@ -42,6 +44,10 @@ image_t load_image(const char* filename) {
     return result;
 }
 
+void save_image(const image_t* img, const char* filename) {
+    stbi_write_jpg(filename, img->width, img->height, DESIRED_CHANNELS, img->data, JPG_QUALITY);
+}
+
 pixel_t pixel_at(const image_t* img, uint32_t x, uint32_t y) {
     pixel_t p;
     
@@ -64,8 +70,10 @@ void show_pixel(const pixel_t* p) {
 }
 
 int main (void) {
-    char *filename = "PixelTest.jpg";
-    image_t img = load_image(filename);
+    char *input  = "PixelTest.jpg";
+    char *output = "Result.jpg";
+
+    image_t img = load_image(input);
 
     for (int y = 0; y < img.height; y++) {
         for (int x = 0; x < img.width; x++) {
@@ -73,6 +81,8 @@ int main (void) {
             show_pixel(&p);
         }
     }
+
+    save_image(&img, output);
 
     stbi_image_free(img.data);
 
