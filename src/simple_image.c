@@ -5,6 +5,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+image_t generate_image(uint32_t width, uint32_t height, uint8_t channels);
+
 image_t load_image(const char* filename) {
     image_t result;
 
@@ -25,16 +27,55 @@ void free_image(image_t *img) {
     stbi_image_free(img->data);
 }
 
-image_t generate_image(uint32_t width, uint32_t height) {
+image_t generate_rgb_image(uint32_t width, uint32_t height) {
+    return generate_image(width, height, 3);
+}
+
+image_t generate_y_image(uint32_t width, uint32_t height) {
+    return generate_image(width, height, 1);
+}
+
+image_t generate_image(uint32_t width, uint32_t height, uint8_t channels) {
     image_t result;
 
     result.width    = width;
     result.height   = height;
-    result.channels = DESIRED_CHANNELS;
-    result.data     = (unsigned char *) malloc((width * height * DESIRED_CHANNELS) * sizeof(unsigned char));
+    result.channels = channels;
+    result.data     = (unsigned char *) malloc((width * height * channels) * sizeof(unsigned char));
 
     return result;
 }
+
+image_t to_gray(image_t *color) {
+    image_t gray = generate_y_image(color->width, color->height);
+
+    for (int y = 0; y < color->height; y++) {
+        for (int x = 0; x < color->width; x++) {
+            uint8_t lum = 0;
+
+            const uint32_t i = color->channels * (color->width * y + x);
+            const uint32_t j = gray.channels * (gray.width * y + x);
+            const uint8_t r  = color->data[i + RED];
+            const uint8_t g  = color->data[i + GREEN];
+            const uint8_t b  = color->data[i + BLUE];
+
+            if (GRAYSCALE_METHOD == WEIGHTED_AVERAGE) {
+                lum = 0.299 * r + 0.587 * g + 0.114 * b;
+            } else if (GRAYSCALE_METHOD == SIMPLE_AVERAGE) {
+                lum = (r + g + b) / 3;
+            } else if (GRAYSCALE_METHOD == LUMINOSITY) {
+                lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            } else {
+                printf("[ERROR] Unknown grayscale method: %d\n", GRAYSCALE_METHOD);
+            }
+
+            gray.data[j] = lum;
+        }
+    }
+    
+    return gray;
+}
+
 
 void clear_image(image_t *img, pixel_t p) {
     for (int y = 0; y < img->height; y++) {
@@ -74,7 +115,7 @@ void draw_line(image_t *img, int x0, int y0, int x1, int y1, pixel_t p) {
 
 void save_image(const image_t* img, const char* filename) {
     const int err = stbi_write_jpg(filename,
-            img->width, img->height, DESIRED_CHANNELS, img->data, JPG_QUALITY);
+            img->width, img->height, img->channels, img->data, JPG_QUALITY);
     if (err != 0 ) {
         printf("[WARNING] saving %s: %s\n", filename, stbi_failure_reason());
     }
