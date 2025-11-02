@@ -1,3 +1,3 @@
 
-main: main.c
-	gcc -Wall -Wextra $< -o $@ -lm
+main: main.c string_art.c
+	gcc -Wall -Wextra $^ -o $@ -lm
