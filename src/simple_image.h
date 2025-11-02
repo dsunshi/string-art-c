@@ -1,6 +1,6 @@
 
-#ifndef STRING_ART_H
-#define STRING_ART_H
+#ifndef SIMPLE_IMAGE_H
+#define SIMPLE_IMAGE_H
 
 #include <stdint.h>
 // #define NDEBUG
@@ -37,4 +37,4 @@ pixel_t pixel_at(const image_t* img, uint32_t x, uint32_t y);
 void show_pixel(const pixel_t* p);
 void free_image(image_t *img);
 
-#endif // STRING_ART_H
+#endif // SIMPLE_IMAGE_H

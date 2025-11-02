@@ -1,6 +1,6 @@
 
 // #include <stdio.h>
-#include "string_art.h"
+#include "simple_image.h"
 
 int main (void) {
     char *input  = "PixelTest.jpg";
