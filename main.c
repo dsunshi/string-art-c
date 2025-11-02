@@ -45,7 +45,10 @@ image_t load_image(const char* filename) {
 }
 
 void save_image(const image_t* img, const char* filename) {
-    stbi_write_jpg(filename, img->width, img->height, DESIRED_CHANNELS, img->data, JPG_QUALITY);
+    const int err = stbi_write_jpg(filename, img->width, img->height, DESIRED_CHANNELS, img->data, JPG_QUALITY);
+    if (err != 0 ) {
+        printf("[WARNING] saving %s: %s\n", filename, stbi_failure_reason());
+    }
 }
 
 pixel_t pixel_at(const image_t* img, uint32_t x, uint32_t y) {
@@ -56,7 +59,7 @@ pixel_t pixel_at(const image_t* img, uint32_t x, uint32_t y) {
 
     // The pixel data consists of *y scanlines of *x pixels,
     // with each pixel consisting of N interleaved 8-bit components
-    uint32_t i = img->channels * (img->width * y + x);
+    const uint32_t i = img->channels * (img->width * y + x);
 
     p.r = img->data[i + RED];
     p.g = img->data[i + GREEN];
