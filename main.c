@@ -1,7 +1,11 @@
 
 #include <stdio.h>
+#include <stdint.h>
+// #define NDEBUG
+#include <assert.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 
 // Force RGB
 #define DESIRED_CHANNELS 3
@@ -15,16 +19,16 @@ typedef struct {
     int height;
     int channels;
     unsigned char *data;
-} image;
+} image_t;
 
 typedef struct {
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-} pixel;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} pixel_t;
 
-image load_image(const char* filename) {
-    image result;
+image_t load_image(const char* filename) {
+    image_t result;
 
     result.data = stbi_load(filename, &result.width, &result.height, &result.channels, DESIRED_CHANNELS);
 
@@ -38,12 +42,15 @@ image load_image(const char* filename) {
     return result;
 }
 
-pixel pixel_at(const image* img, int x, int y) {
-    pixel p;
+pixel_t pixel_at(const image_t* img, uint32_t x, uint32_t y) {
+    pixel_t p;
+    
+    assert(img != NULL);
+    assert(img->data != NULL);
 
     // The pixel data consists of *y scanlines of *x pixels,
     // with each pixel consisting of N interleaved 8-bit components
-    unsigned int i = img->channels * (img->width * y + x);
+    uint32_t i = img->channels * (img->width * y + x);
 
     p.r = img->data[i + RED];
     p.g = img->data[i + GREEN];
@@ -52,17 +59,17 @@ pixel pixel_at(const image* img, int x, int y) {
     return p;
 }
 
-void show_pixel(const pixel* p) {
+void show_pixel(const pixel_t* p) {
     printf("%02X%02X%02X\n", p->r, p->g, p->b);
 }
 
 int main (void) {
     char *filename = "PixelTest.jpg";
-    image img = load_image(filename);
+    image_t img = load_image(filename);
 
     for (int y = 0; y < img.height; y++) {
         for (int x = 0; x < img.width; x++) {
-            pixel p = pixel_at(&img, x, y);
+            pixel_t p = pixel_at(&img, x, y);
             show_pixel(&p);
         }
     }
