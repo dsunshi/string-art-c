@@ -11,6 +11,7 @@ int main (void) {
 
     clear_image(&out, (pixel_t){0xff, 0xff, 0xff});
     draw_line(&out, 0, 0, 250, 250, (pixel_t){0x00, 0x00, 0x00});
+    draw_line(&out, 250, 250, 500, 0, (pixel_t){0x00, 0x00, 0x00});
 
     for (int y = 0; y < img.height; y++) {
         for (int x = 0; x < img.width; x++) {

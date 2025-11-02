@@ -48,20 +48,26 @@ void clear_image(image_t *img, pixel_t p) {
     }
 }
 
-void draw_line(image_t *img, uint32_t x0, uint32_t y0,
-        uint32_t x1, uint32_t y1, pixel_t p) {
-    int dx = x1 - x0;
-    int dy = y1 - y0;
-    int D  = 2 * dy - dx;
-    int y  = y0;
+void draw_line(image_t *img, int x0, int y0, int x1, int y1, pixel_t p) {
+    int dx = abs(x1 - x0);
+    int sx = x0 < x1 ? 1 : -1;
+    int dy = -abs(y1 - y0);
+    int sy = y0 < y1 ? 1 : -1;
+    int error = dx + dy;
 
-    for (uint32_t x = x0; x < x1; x++) {
-        write_pixel(img, x, y, p);
-        if (D > 0) {
-            y = y + 1;
-            D = D - 2 * dx;
+    while (1) {
+        write_pixel(img, x0, y0, p);
+        int e2 = 2 * error;
+        if (e2 >= dy) {
+            if (x0 == x1) break;
+            error = error + dy;
+            x0 = x0 + sx;
         }
-        D = D + 2 * dy;
+        if (e2 <= dx) {
+            if (y0 == y1) break;
+            error = error + dx;
+            y0 = y0 + sy;
+        }
     }
 }
 
