@@ -5,6 +5,7 @@
 #include <stdint.h>
 // #define NDEBUG
 #include <assert.h>
+#include <stdbool.h>
 
 // Force RGB
 #define DESIRED_CHANNELS 3

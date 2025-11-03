@@ -96,7 +96,7 @@ void draw_line(image_t *img, int x0, int y0, int x1, int y1, pixel_t p) {
     int sy = y0 < y1 ? 1 : -1;
     int error = dx + dy;
 
-    while (1) {
+    while (true) {
         write_pixel(img, x0, y0, p);
         int e2 = 2 * error;
         if (e2 >= dy) {
