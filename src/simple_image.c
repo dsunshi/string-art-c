@@ -7,18 +7,25 @@
 
 image_t generate_image(uint32_t width, uint32_t height, uint8_t channels);
 
+double fclamp(double x, double minimum, double maximum) {
+    return fmax(minimum, fmin(x, maximum));
+}
+
 image_t load_image(const char* filename) {
     image_t result;
+    int width    = 0;
+    int height   = 0;
+    int channels = 0;
 
-    result.data = stbi_load(filename,
-            &result.width, &result.height, &result.channels, DESIRED_CHANNELS);
+    result.data = stbi_load(filename, &width, &height, &channels, DESIRED_CHANNELS);
 
     if (result.data == NULL) {
         printf("[ERROR] loading %s: %s\n", filename, stbi_failure_reason());
-        result.width    = 0;
-        result.height   = 0;
-        result.channels = 0;
     }
+
+    result.width    = (uint32_t) width;
+    result.height   = (uint32_t) height;
+    result.channels = (uint8_t) channels;
 
     return result;
 }
@@ -49,15 +56,15 @@ image_t generate_image(uint32_t width, uint32_t height, uint8_t channels) {
 image_t to_gray(image_t *color) {
     image_t gray = generate_y_image(color->width, color->height);
 
-    for (int y = 0; y < color->height; y++) {
-        for (int x = 0; x < color->width; x++) {
-            uint8_t lum = 0;
+    for (uint32_t y = 0; y < color->height; y++) {
+        for (uint32_t x = 0; x < color->width; x++) {
+            double lum = 0;
 
             const uint32_t i = color->channels * (color->width * y + x);
             const uint32_t j = gray.channels * (gray.width * y + x);
-            const uint8_t r  = color->data[i + RED];
-            const uint8_t g  = color->data[i + GREEN];
-            const uint8_t b  = color->data[i + BLUE];
+            const double r  = color->data[i + RED];
+            const double g  = color->data[i + GREEN];
+            const double b  = color->data[i + BLUE];
 
             if (GRAYSCALE_METHOD == WEIGHTED_AVERAGE) {
                 lum = 0.299 * r + 0.587 * g + 0.114 * b;
@@ -69,7 +76,7 @@ image_t to_gray(image_t *color) {
                 printf("[ERROR] Unknown grayscale method: %d\n", GRAYSCALE_METHOD);
             }
 
-            gray.data[j] = lum;
+            gray.data[j] = (unsigned char) lum;
         }
     }
     
@@ -78,8 +85,8 @@ image_t to_gray(image_t *color) {
 
 
 void clear_image(image_t *img, pixel_t p) {
-    for (int y = 0; y < img->height; y++) {
-        for (int x = 0; x < img->width; x++) {
+    for (uint32_t y = 0; y < img->height; y++) {
+        for (uint32_t x = 0; x < img->width; x++) {
             const uint32_t i = img->channels * (img->width * y + x);
 
             img->data[i + RED]   = p.r;
@@ -115,7 +122,9 @@ void draw_line(image_t *img, int x0, int y0, int x1, int y1, pixel_t p) {
 
 void save_image(const image_t* img, const char* filename) {
     const int err = stbi_write_jpg(filename,
-            img->width, img->height, img->channels, img->data, JPG_QUALITY);
+            (int) img->width,
+            (int) img->height,
+            (int) img->channels, img->data, JPG_QUALITY);
     if (err != 0 ) {
         printf("[WARNING] saving %s: %s\n", filename, stbi_failure_reason());
     }

@@ -23,9 +23,9 @@
 #define GRAYSCALE_METHOD LUMINOSITY
 
 typedef struct {
-    int width;
-    int height;
-    int channels;
+    uint32_t width;
+    uint32_t height;
+    uint8_t channels;
     unsigned char *data;
 } image_t;
 
