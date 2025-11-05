@@ -1,5 +1,5 @@
 
-// #include <stdio.h>
+#include <stdio.h>
 #include "simple_image.h"
 
 int main (void) {
@@ -9,6 +9,9 @@ int main (void) {
     image_t img = load_image(input);
     image_t out = to_gray(&img);
 
+    printf("[INFO] Loading file: %s\n", input);
+    printf("[INFO] Image width: %d\n", img.width);
+    printf("[INFO] Image height: %d\n", img.height);
     // clear_image(&out, (pixel_t){0xff, 0xff, 0xff});
     // draw_line(&out, 0, 0, 250, 250, (pixel_t){0x00, 0x00, 0x00});
     // draw_line(&out, 250, 250, 500, 0, (pixel_t){0x00, 0x00, 0x00});
@@ -20,6 +23,7 @@ int main (void) {
     //     }
     // }
 
+    printf("[INFO] Saving: %s\n", output);
     save_image(&out, output);
 
     free_image(&img);

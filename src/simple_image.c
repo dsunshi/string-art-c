@@ -126,7 +126,7 @@ void save_image(const image_t* img, const char* filename) {
             (int) img->height,
             (int) img->channels, img->data, JPG_QUALITY);
     if (err != 0 ) {
-        printf("[WARNING] saving %s: %s\n", filename, stbi_failure_reason());
+        printf("[WARNING] %s when saving: %s\n", stbi_failure_reason(), filename);
     }
 }
 
