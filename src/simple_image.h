@@ -35,6 +35,10 @@ typedef struct {
     uint8_t b;
 } pixel_t;
 
+#define CLAMP_PIXEL(x) fclamp(x, 0.0, 255.0)
+
+double fclamp(double x, double minimum, double maximum);
+
 image_t load_image(const char* filename);
 image_t generate_rgb_image(uint32_t width, uint32_t height);
 image_t generate_y_image(uint32_t width, uint32_t height);

@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include "simple_image.h"
+#include "string_art.h"
 
 int main (void) {
     char *input  = "smiley-face.jpg";
@@ -12,6 +13,8 @@ int main (void) {
     printf("[INFO] Loading file: %s\n", input);
     printf("[INFO] Image width: %d\n", img.width);
     printf("[INFO] Image height: %d\n", img.height);
+
+    brighten_line(&out, 10, 10, 300, 300);
     // clear_image(&out, (pixel_t){0xff, 0xff, 0xff});
     // draw_line(&out, 0, 0, 250, 250, (pixel_t){0x00, 0x00, 0x00});
     // draw_line(&out, 250, 250, 500, 0, (pixel_t){0x00, 0x00, 0x00});

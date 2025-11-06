@@ -7,6 +7,8 @@
 
 image_t generate_image(uint32_t width, uint32_t height, uint8_t channels);
 
+#define CLAMP_PIXEL(x) fclamp(x, 0.0, 255.0)
+
 double fclamp(double x, double minimum, double maximum) {
     return fmax(minimum, fmin(x, maximum));
 }
@@ -55,10 +57,10 @@ image_t generate_image(uint32_t width, uint32_t height, uint8_t channels) {
 
 image_t to_gray(image_t *color) {
     image_t gray = generate_y_image(color->width, color->height);
+    double lum = 0;
 
     for (uint32_t y = 0; y < color->height; y++) {
         for (uint32_t x = 0; x < color->width; x++) {
-            double lum = 0;
 
             const uint32_t i = color->channels * (color->width * y + x);
             const uint32_t j = gray.channels * (gray.width * y + x);
