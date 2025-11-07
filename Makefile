@@ -10,7 +10,7 @@ else
 endif
 
 main: src/main.c src/simple_image.c src/line_art.c
-	$(CC) $(CFLAGS) $^ -o $@ -lm
+	$(CC) $(CFLAGS) $^ -o $@ -lm -Ilib/
 
 .PHONY:clean
 clean:
