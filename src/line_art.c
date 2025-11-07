@@ -1,5 +1,5 @@
 
-#include "string_art.h"
+#include "line_art.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>

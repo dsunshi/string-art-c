@@ -9,7 +9,7 @@ else
 	CFLAGS += -O3 -Wfloat-conversion -DNDEBUG
 endif
 
-main: src/main.c src/simple_image.c src/string_art.c
+main: src/main.c src/simple_image.c src/line_art.c
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
 .PHONY:clean

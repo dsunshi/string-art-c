@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include "simple_image.h"
-#include "string_art.h"
+#include "line_art.h"
 
 int main (void) {
     char *input  = "smiley-face.jpg";
