@@ -4,6 +4,40 @@
 #include <stdio.h>
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+frame_t init_round_frame(const image_t *img, const uint32_t radius, const uint32_t space) {
+    frame_t result;
+
+    const double circumference = 2.0 * M_PI * ((double) radius);
+    result.count = (uint32_t) (circumference / ((double) space));
+    result.nails = (point_t *) malloc( (result.count + 1) * sizeof(point_t));
+
+    uint32_t cx = img->width / 2;
+    uint32_t cy = img->height / 2;
+    uint32_t x  = 0;
+    uint32_t y  = 0;
+    uint32_t i  = 0;
+    for (double rad = 0; rad < 2 * M_PI; rad += (2 * M_PI) / result.count) {
+        // const double rad = ((double) degrees) * (M_PI / 180.0);
+        x = (uint32_t) (((double) radius) * cos(rad) + cx);
+        y = (uint32_t) (((double) radius) * sin(rad) + cy);
+        
+        result.nails[i].x = x;
+        result.nails[i].y = y;
+        i++;
+    }
+
+    if (result.count != (i - 1)) {
+        printf("[INFO] count: %d\n", result.count);
+        printf("[INFO] i    : %d\n", i);
+    }
+
+    return result;
+}
+
 double line_contrast(const image_t *img, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1) {
     int dx = abs((int)(x1) - (int)(x0));
     int sx = x0 < x1 ? 1 : -1;

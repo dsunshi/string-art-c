@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "simple_image.h"
 #include "line_art.h"
 
@@ -13,6 +14,8 @@ int main (void) {
     printf("[INFO] Loading file: %s\n", input);
     printf("[INFO] Image width: %d\n", img.width);
     printf("[INFO] Image height: %d\n", img.height);
+
+    frame_t frame = init_round_frame(&out, out.width/2, 1);
 
     brighten_line(&out, 10, 10, 300, 300);
     // clear_image(&out, (pixel_t){0xff, 0xff, 0xff});
@@ -31,6 +34,7 @@ int main (void) {
 
     free_image(&img);
     free_image(&out);
+    free(frame.nails);
 
     return 0;
 }

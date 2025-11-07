@@ -2,8 +2,8 @@
 #ifndef SIMPLE_IMAGE_H
 #define SIMPLE_IMAGE_H
 
+#include "config.h"
 #include <stdint.h>
-// #define NDEBUG
 #include <assert.h>
 #include <stdbool.h>
 
@@ -14,13 +14,6 @@
 #define RED 0
 #define GREEN 1
 #define BLUE 2
-
-// RGB -> GRAY
-#define WEIGHTED_AVERAGE 0
-#define SIMPLE_AVERAGE 1
-#define LUMINOSITY 2
-// #define GRAYSCALE_METHOD WEIGHTED_AVERAGE
-#define GRAYSCALE_METHOD LUMINOSITY
 
 typedef struct {
     uint32_t width;
