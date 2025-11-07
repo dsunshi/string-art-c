@@ -4,6 +4,9 @@
 #include "simple_image.h"
 #include "line_art.h"
 
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
 int main (void) {
     char *input  = "smiley-face.jpg";
     char *output = "Result.jpg";
@@ -15,7 +18,7 @@ int main (void) {
     printf("[INFO] Image width: %d\n", img.width);
     printf("[INFO] Image height: %d\n", img.height);
 
-    frame_t frame = init_round_frame(&out, out.width/2, 1);
+    frame_t frame = init_round_frame(&out, MIN(out.width, out.height)/2, 1);
 
     brighten_line(&out, 10, 10, 300, 300);
     // clear_image(&out, (pixel_t){0xff, 0xff, 0xff});
