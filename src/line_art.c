@@ -13,18 +13,19 @@ line_t next_line(const image_t *img, const frame_t *frame, const line_t *curr) {
     uint32_t starty = 0;
     uint32_t endx   = 0;
     uint32_t endy   = 0;
-    line_t result;
     double max_y    = 0.0;
+    
+    line_t result   = {0};
 
     startx = curr->end.x;
     starty = curr->end.y;
 
     for (uint32_t j = 0; j <= frame->count; j++) {
-        endx   = frame->nails[j].x;
-        endy   = frame->nails[j].y;
+        endx = frame->nails[j].x;
+        endy = frame->nails[j].y;
 
         const double y = line_contrast(img, startx, starty, endx, endy);
-        if (y > max_y) {
+        if (y >= max_y) {
             result.start.x = startx;
             result.start.y = starty;
             result.end.x   = endx;
@@ -41,8 +42,8 @@ line_t darkest_line(const image_t *img, const frame_t *frame) {
     uint32_t starty = 0;
     uint32_t endx   = 0;
     uint32_t endy   = 0;
-    line_t result;
     double max_y    = 0.0;
+    line_t result;
 
     for (uint32_t i = 0; i <= frame->count; i++) {
         for (uint32_t j = 0; j <= frame->count; j++) {
@@ -143,6 +144,10 @@ void brighten_line(const image_t *img, uint32_t x0, uint32_t y0, uint32_t x1, ui
     int sy = y0 < y1 ? 1 : -1;
     int error = dx + dy;
     double lum = 0;
+    
+    if ((x0 == x1) && (y0 == y1)) {
+        return;
+    }
 
     while (true) {
         const uint32_t i = img->channels * (img->width * y0 + x0);

@@ -9,12 +9,18 @@ void draw_image(const image_t *img, const frame_t *frame) {
 
     show_line(&line);
     brighten_line(img, line.start.x, line.start.y, line.end.x, line.end.y);
+
     for (uint32_t i = 0; i < MAX_LINES; i++) {
         line_t next = next_line(img, frame, &line);
 
+        if ((next.start.x == next.end.x) && (next.start.y == next.end.y)) {
+            printf("[INFO]: Stopping at %d\n", i);
+            break;
+        }
+
         line = next;
-        brighten_line(img, line.start.x, line.start.y, line.end.x, line.end.y);
         show_line(&line);
+        brighten_line(img, line.start.x, line.start.y, line.end.x, line.end.y);
     }
 }
 
