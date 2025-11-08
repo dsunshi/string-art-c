@@ -8,6 +8,34 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+line_t next_line(const image_t *img, const frame_t *frame, const line_t *curr) {
+    uint32_t startx = 0;
+    uint32_t starty = 0;
+    uint32_t endx   = 0;
+    uint32_t endy   = 0;
+    line_t result;
+    double max_y    = 0.0;
+
+    startx = curr->end.x;
+    starty = curr->end.y;
+
+    for (uint32_t j = 0; j <= frame->count; j++) {
+        endx   = frame->nails[j].x;
+        endy   = frame->nails[j].y;
+
+        const double y = line_contrast(img, startx, starty, endx, endy);
+        if (y > max_y) {
+            result.start.x = startx;
+            result.start.y = starty;
+            result.end.x   = endx;
+            result.end.y   = endy;
+            max_y = y;
+        }
+    }
+
+    return result;
+}
+
 line_t darkest_line(const image_t *img, const frame_t *frame) {
     uint32_t startx = 0;
     uint32_t starty = 0;

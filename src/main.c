@@ -4,6 +4,20 @@
 #include "simple_image.h"
 #include "line_art.h"
 
+void draw_image(const image_t *img, const frame_t *frame) {
+    line_t line = darkest_line(img, frame);
+
+    show_line(&line);
+    brighten_line(img, line.start.x, line.start.y, line.end.x, line.end.y);
+    for (uint32_t i = 0; i < MAX_LINES; i++) {
+        line_t next = next_line(img, frame, &line);
+
+        line = next;
+        brighten_line(img, line.start.x, line.start.y, line.end.x, line.end.y);
+        show_line(&line);
+    }
+}
+
 int main (void) {
     char *input  = "smiley-face.jpg";
     char *output = "Result.jpg";
@@ -25,21 +39,8 @@ int main (void) {
     printf("[INFO] Image height: %d\n", img.height);
 
     frame_t frame = init_round_frame(&out, MIN(out.width, out.height)/2, 1);
-    line_t  init  = darkest_line(&out, &frame);
 
-    brighten_line(&out, init.start.x, init.start.y, init.end.x, init.end.y);
-
-    show_line(&init);
-    // clear_image(&out, (pixel_t){0xff, 0xff, 0xff});
-    // draw_line(&out, 0, 0, 250, 250, (pixel_t){0x00, 0x00, 0x00});
-    // draw_line(&out, 250, 250, 500, 0, (pixel_t){0x00, 0x00, 0x00});
-
-    // for (int y = 0; y < img.height; y++) {
-    //     for (int x = 0; x < img.width; x++) {
-    //         pixel_t p = pixel_at(&img, x, y);
-    //         show_pixel(&p);
-    //     }
-    // }
+    draw_image(&out, &frame);
 
     printf("[INFO] Saving: %s\n", output);
     save_image(&out, output);
