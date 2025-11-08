@@ -8,6 +8,35 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+line_t darkest_line(const image_t *img, const frame_t *frame) {
+    uint32_t startx = 0;
+    uint32_t starty = 0;
+    uint32_t endx   = 0;
+    uint32_t endy   = 0;
+    line_t result;
+    double max_y    = 0.0;
+
+    for (uint32_t i = 0; i <= frame->count; i++) {
+        for (uint32_t j = 0; j <= frame->count; j++) {
+            startx = frame->nails[i].x;
+            startx = frame->nails[i].y;
+            endx   = frame->nails[j].x;
+            endy   = frame->nails[j].y;
+
+            const double y = line_contrast(img, startx, starty, endx, endy);
+            if (y > max_y) {
+                result.start.x = startx;
+                result.start.y = starty;
+                result.end.x   = endx;
+                result.end.y   = endy;
+                max_y = y;
+            }
+        }
+    }
+
+    return result;
+}
+
 frame_t init_round_frame(const image_t *img, const uint32_t radius, const uint32_t space) {
     frame_t result;
 
@@ -32,7 +61,7 @@ frame_t init_round_frame(const image_t *img, const uint32_t radius, const uint32
 
     if (result.count != (i - 1)) {
         printf("[INFO] count: %d\n", result.count);
-        printf("[INFO] i    : %d\n", i);
+        printf("[INFO] i:     %d\n", i);
     }
 
     return result;
@@ -48,6 +77,10 @@ double line_contrast(const image_t *img, uint32_t x0, uint32_t y0, uint32_t x1, 
     double sum = 0;
     double lum = 0;
     double len = sqrt(pow((x1 - x0), 2) + pow((y1 - y0), 2));
+
+    if ((x0 == x1) && (y0 == y1)) {
+        return 0;
+    }
 
     while (true) {
         const uint32_t i = img->channels * (img->width * y0 + x0);
@@ -109,5 +142,11 @@ void brighten_line(const image_t *img, uint32_t x0, uint32_t y0, uint32_t x1, ui
         }
     }
 
+}
+
+void show_line(const line_t* l) {
+    assert(l != NULL);
+
+    printf("(%d, %d) -> (%d, %d)\n", l->start.x, l->start.y, l->end.x, l->end.y);
 }
 

@@ -30,6 +30,9 @@ typedef struct {
 
 #define CLAMP_PIXEL(x) fclamp(x, 0.0, 255.0)
 
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
 double fclamp(double x, double minimum, double maximum);
 
 image_t load_image(const char* filename);
