@@ -81,7 +81,7 @@ void draw_image(const image_t *img, const frame_t *frame, FILE *gcode) {
 }
 
 int main (void) {
-    char *input    = "smiley-face.jpg";
+    char *input    = "tiger.jpeg";
     char *output   = "Result.jpg";
     char *drawing  = "draw.gcode";
 
@@ -105,7 +105,7 @@ int main (void) {
     printf("[INFO] Printer width:  %d\n", rescale_x(&img, img.width));
     printf("[INFO] Printer height: %d\n", rescale_y(&img, img.height));
 
-    frame_t frame = init_round_frame(&out, MIN(out.width, out.height)/2, 1);
+    frame_t frame = init_round_frame(&out, MIN(out.width, out.height)/2, 10);
 
     draw_image(&out, &frame, gcode);
 
