@@ -102,6 +102,8 @@ int main (void) {
     printf("[INFO] Loading file: %s\n", input);
     printf("[INFO] Image width:  %d\n", img.width);
     printf("[INFO] Image height: %d\n", img.height);
+    printf("[INFO] Printer width:  %d\n", rescale_x(&img, img.width));
+    printf("[INFO] Printer height: %d\n", rescale_y(&img, img.height));
 
     frame_t frame = init_round_frame(&out, MIN(out.width, out.height)/2, 1);
 
