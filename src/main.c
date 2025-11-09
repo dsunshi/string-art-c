@@ -7,7 +7,18 @@
 #define PRINTER_X0 36.5
 #define PRINTER_Y0 40.0
 #define PRINTER_Z0 5.0
-#define PRINTER_FEEDRATE 720.0
+#define PRINTER_FEEDRATE 1000.0
+
+#define PRINTER_MAX_X (254.0 - PRINTER_X0)
+#define PRINTER_MAX_Y (212.0 - PRINTER_Y0)
+
+uint32_t rescale_x(const image_t *img, uint32_t x) {
+    return (uint32_t) ((((double) x) / ((double) img->width)) * PRINTER_MAX_X);
+}
+
+uint32_t rescale_y(const image_t *img, uint32_t y) {
+    return (uint32_t) ((((double) y) / ((double) img->height)) * PRINTER_MAX_Y);
+}
 
 FILE *init_gcode(const char *filename) {
     FILE *fp = fopen(filename, "w");
@@ -36,8 +47,14 @@ void close_gcode(FILE *fp) {
     fclose(fp);
 }
 
-void goto_gcode(FILE *fp, uint32_t x, uint32_t y) {
-    fprintf(fp, "G1 X%d Y%d\n", x, y);
+void goto_gcode(const image_t *img, FILE *fp, uint32_t x, uint32_t y) {
+    fprintf(fp, "G1 X%d Y%d\n", rescale_x(img, x), rescale_y(img, y));
+}
+
+void start_gcode(const image_t *img, FILE *fp, uint32_t x, uint32_t y) {
+    fprintf(fp, "G1 X%d Y%d ; starting point\n", rescale_x(img, x), rescale_y(img, y));
+    fprintf(fp, "@pause\n");
+    fprintf(fp, "\n");
 }
 
 void draw_image(const image_t *img, const frame_t *frame, FILE *gcode) {
@@ -45,21 +62,21 @@ void draw_image(const image_t *img, const frame_t *frame, FILE *gcode) {
 
     // show_line(&line);
     brighten_line(img, line.start.x, line.start.y, line.end.x, line.end.y);
-    goto_gcode(gcode, line.start.x, line.start.y);
-    goto_gcode(gcode, line.end.x, line.end.y);
+    start_gcode(img, gcode, line.start.x, line.start.y);
+    goto_gcode(img, gcode, line.end.x, line.end.y);
 
     for (uint32_t i = 0; i < MAX_LINES; i++) {
         line_t next = next_line(img, frame, &line);
 
         if ((next.start.x == next.end.x) && (next.start.y == next.end.y)) {
-            printf("[INFO]: Stopping at %d\n", i);
+            printf("[INFO] Stopping at %d\n", i);
             break;
         }
 
         line = next;
         // show_line(&line);
         brighten_line(img, line.start.x, line.start.y, line.end.x, line.end.y);
-        goto_gcode(gcode, line.end.x, line.end.y);
+        goto_gcode(img, gcode, line.end.x, line.end.y);
     }
 }
 
